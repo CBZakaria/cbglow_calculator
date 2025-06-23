@@ -251,79 +251,120 @@ export default function Home() {
           </div>
 
           {/* Mobile Card View */}
-          <div className="lg:hidden space-y-4">
+          <div className="lg:hidden space-y-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white border border-gray-300 rounded-lg shadow-sm p-4">
-                <div className="flex items-start space-x-4">
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shadow-md flex-shrink-0">
-                    <Image
-                      src={product.image}
-                      alt={product.designation}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 80px, 96px"
-                    />
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm sm:text-base text-gray-900 mb-2">
-                      {product.designation}
-                    </h3>
-                    
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div>
-                        <span className="text-gray-600">Cartons:</span>
-                        <input
-                          type="number"
-                          value={product.carton}
-                          onChange={(e) => updateCarton(product.id, parseInt(e.target.value) || 0)}
-                          className="ml-2 w-16 px-2 py-1 border border-gray-300 rounded text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          min="0"
-                        />
-                      </div>
-                      
-                      <div>
-                        <span className="text-gray-600">Qté:</span>
-                        <span className="ml-2 font-medium">{product.qty}</span>
-                      </div>
-                      
-                      <div>
-                        <span className="text-gray-600">P.U.:</span>
-                        <span className="ml-2 font-semibold text-blue-600">
-                          {getUnitPrice(product).toFixed(2)} DA
-                        </span>
-                      </div>
-                      
-                      <div>
-                        <span className="text-gray-600">Catégorie:</span>
-                        <span className={`ml-2 px-2 py-1 rounded text-xs text-white ${
-                          product.carton >= 50 ? 'bg-green-500' :
-                          product.carton >= 10 ? 'bg-blue-500' :
-                          product.carton >= 1 ? 'bg-orange-500' : 'bg-red-500'
-                        }`}>
-                          {getPriceCategory(product.carton)}
-                        </span>
-                      </div>
+              <div key={product.id} className="bg-white border border-gray-200 rounded-xl shadow-lg p-6">
+                <div className="flex flex-col space-y-4">
+                  {/* Product Header */}
+                  <div className="flex items-start space-x-4">
+                    <div className="relative w-24 h-24 rounded-xl overflow-hidden shadow-md flex-shrink-0 border border-gray-100">
+                      <Image
+                        src={product.image}
+                        alt={product.designation}
+                        fill
+                        className="object-cover"
+                        sizes="96px"
+                      />
                     </div>
                     
-                    <div className="mt-3 pt-3 border-t border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Montant:</span>
-                        <span className="text-lg font-bold text-gray-900">
-                          {calculateMontant(product).toFixed(2)} DA
-                        </span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-base text-gray-900 mb-2 leading-tight">
+                        {product.designation}
+                      </h3>
+                      
+                      {/* Quantity Info */}
+                      <div className="flex items-center space-x-4 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <span className="font-medium">Qté:</span>
+                          <span className="ml-1 font-semibold text-gray-900">{product.qty}</span>
+                        </div>
                       </div>
+                    </div>
+                  </div>
+                  
+                  {/* Input Section */}
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-medium text-gray-700">Nombre de cartons:</label>
+                      <input
+                        type="number"
+                        value={product.carton}
+                        onChange={(e) => updateCarton(product.id, parseInt(e.target.value) || 0)}
+                        className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-center font-semibold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                        min="0"
+                      />
+                    </div>
+                    
+                    {/* Category Badge */}
+                    <div className="flex justify-center">
+                      <span className={`px-4 py-2 rounded-full text-sm font-medium text-white ${
+                        product.carton >= 50 ? 'bg-green-500' :
+                        product.carton >= 10 ? 'bg-blue-500' :
+                        product.carton >= 1 ? 'bg-orange-500' : 'bg-red-500'
+                      }`}>
+                        {getPriceCategory(product.carton)}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Price Info */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="text-sm text-gray-600">Prix unitaire:</span>
+                      <span className="font-bold text-blue-600 text-lg">
+                        {getUnitPrice(product).toFixed(2)} DA
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center py-2 bg-blue-50 rounded-lg px-4">
+                      <span className="font-semibold text-gray-900">Montant total:</span>
+                      <span className="text-xl font-bold text-blue-900">
+                        {calculateMontant(product).toFixed(2)} DA
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
             
+            {/* Mobile Summary Table */}
+            <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 text-center">Résumé de la Commande</h3>
+              <div className="space-y-3">
+                {products.filter(product => product.carton > 0).map((product) => (
+                  <div key={product.id} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                    <div className="flex-1">
+                      <div className="font-medium text-sm text-gray-900 mb-1">
+                        {product.designation}
+                      </div>
+                      <div className="flex items-center space-x-4 text-xs text-gray-600">
+                        <span>{product.carton} carton{product.carton > 1 ? 's' : ''}</span>
+                        <span className="text-blue-600 font-medium">
+                          {getUnitPrice(product).toFixed(2)} DA/u
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-gray-900">
+                        {calculateMontant(product).toFixed(2)} DA
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {products.filter(product => product.carton > 0).length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    Aucun produit sélectionné
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Mobile Total */}
-            <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-600 rounded-xl shadow-lg p-6">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">Total:</span>
-                <span className="text-xl font-bold text-gray-900">
+                <span className="text-xl font-bold text-white">Total Général:</span>
+                <span className="text-2xl font-bold text-white">
                   {totalMontant.toFixed(2)} DA
                 </span>
               </div>
