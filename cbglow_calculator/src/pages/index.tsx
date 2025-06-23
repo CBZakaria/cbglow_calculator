@@ -162,29 +162,26 @@ export default function Home() {
         <meta name="description" content="Delivery Note Calculator" />
         <link rel="icon" href="/cnb logomark-01.png" />
       </Head>
-      <main className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-8">
+      <main className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-8">
+        <div className="w-full bg-white shadow-lg rounded-lg p-4 sm:p-6 lg:p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <div className="relative w-16 h-16 mr-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center mb-4">
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 mb-2 sm:mb-0 sm:mr-4">
                 <Image
                   src="/cnb logomark-01.png"
-                  alt="CNB Logo"
+                  alt="CB Logo"
                   fill
                   className="object-contain"
-                  sizes="64px"
+                  sizes="(max-width: 640px) 48px, 64px"
                 />
               </div>
-              <h1 className="text-2xl font-bold">Prix Produit C&B Glow</h1>
-            </div>
-            <div className="grid grid-cols-4 gap-4 text-sm">
-
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Prix Produit C&B Glow</h1>
             </div>
           </div>
 
-          {/* Product Table */}
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full border-collapse border border-gray-400">
               <thead>
                 <tr className="bg-gray-100">
@@ -253,25 +250,105 @@ export default function Home() {
             </table>
           </div>
 
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4">
+            {products.map((product) => (
+              <div key={product.id} className="bg-white border border-gray-300 rounded-lg shadow-sm p-4">
+                <div className="flex items-start space-x-4">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shadow-md flex-shrink-0">
+                    <Image
+                      src={product.image}
+                      alt={product.designation}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 80px, 96px"
+                    />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm sm:text-base text-gray-900 mb-2">
+                      {product.designation}
+                    </h3>
+                    
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="text-gray-600">Cartons:</span>
+                        <input
+                          type="number"
+                          value={product.carton}
+                          onChange={(e) => updateCarton(product.id, parseInt(e.target.value) || 0)}
+                          className="ml-2 w-16 px-2 py-1 border border-gray-300 rounded text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          min="0"
+                        />
+                      </div>
+                      
+                      <div>
+                        <span className="text-gray-600">Qté:</span>
+                        <span className="ml-2 font-medium">{product.qty}</span>
+                      </div>
+                      
+                      <div>
+                        <span className="text-gray-600">P.U.:</span>
+                        <span className="ml-2 font-semibold text-blue-600">
+                          {getUnitPrice(product).toFixed(2)} DA
+                        </span>
+                      </div>
+                      
+                      <div>
+                        <span className="text-gray-600">Catégorie:</span>
+                        <span className={`ml-2 px-2 py-1 rounded text-xs text-white ${
+                          product.carton >= 50 ? 'bg-green-500' :
+                          product.carton >= 10 ? 'bg-blue-500' :
+                          product.carton >= 1 ? 'bg-orange-500' : 'bg-red-500'
+                        }`}>
+                          {getPriceCategory(product.carton)}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Montant:</span>
+                        <span className="text-lg font-bold text-gray-900">
+                          {calculateMontant(product).toFixed(2)} DA
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {/* Mobile Total */}
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-bold">Total:</span>
+                <span className="text-xl font-bold text-gray-900">
+                  {totalMontant.toFixed(2)} DA
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* Pricing Legend */}
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold mb-2">Barème de Prix:</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-              <div className="flex items-center">
-                <span className="w-3 h-3 bg-green-500 rounded mr-2"></span>
-                Distributeur (≥50 cartons)
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h3 className="font-semibold mb-3 text-center sm:text-left">Barème de Prix:</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+              <div className="flex items-center justify-center sm:justify-start p-2 bg-white rounded border">
+                <span className="w-4 h-4 bg-green-500 rounded mr-3 flex-shrink-0"></span>
+                <span className="text-center sm:text-left">Distributeur<br className="sm:hidden"/><span className="hidden sm:inline"> </span>(≥50 cartons)</span>
               </div>
-              <div className="flex items-center">
-                <span className="w-3 h-3 bg-blue-500 rounded mr-2"></span>
-                Grossiste (≥10 cartons)
+              <div className="flex items-center justify-center sm:justify-start p-2 bg-white rounded border">
+                <span className="w-4 h-4 bg-blue-500 rounded mr-3 flex-shrink-0"></span>
+                <span className="text-center sm:text-left">Grossiste<br className="sm:hidden"/><span className="hidden sm:inline"> </span>(≥10 cartons)</span>
               </div>
-              <div className="flex items-center">
-                <span className="w-3 h-3 bg-orange-500 rounded mr-2"></span>
-                Détaillant (≥1 carton)
+              <div className="flex items-center justify-center sm:justify-start p-2 bg-white rounded border">
+                <span className="w-4 h-4 bg-orange-500 rounded mr-3 flex-shrink-0"></span>
+                <span className="text-center sm:text-left">Détaillant<br className="sm:hidden"/><span className="hidden sm:inline"> </span>(≥1 carton)</span>
               </div>
-              <div className="flex items-center">
-                <span className="w-3 h-3 bg-red-500 rounded mr-2"></span>
-                Consommateur (&lt;1 carton)
+              <div className="flex items-center justify-center sm:justify-start p-2 bg-white rounded border">
+                <span className="w-4 h-4 bg-red-500 rounded mr-3 flex-shrink-0"></span>
+                <span className="text-center sm:text-left">Consommateur<br className="sm:hidden"/><span className="hidden sm:inline"> </span>(&lt;1 carton)</span>
               </div>
             </div>
           </div>
